@@ -46,3 +46,6 @@ document
   .addEventListener('click', function () {
     message.remove();
   });
+
+message.style.height =
+  Number.parseInt(getComputedStyle(message).height, 10) + 40 + 'px';
