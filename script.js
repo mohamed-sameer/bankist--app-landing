@@ -49,3 +49,17 @@ document
 
 message.style.height =
   Number.parseInt(getComputedStyle(message).height, 10) + 40 + 'px';
+
+// smooth scrolling
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+
+btnScrollTo.addEventListener('click', function (e) {
+  const sec1Coords = section1.getBoundingClientRect();
+  // window.scrollTo({
+  //   left: sec1Coords.left + window.scrollX,
+  //   top: sec1Coords.top + window.screenY,
+  //   behavior: 'smooth',
+  // });
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
