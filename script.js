@@ -125,5 +125,6 @@ const handleHover = function (e) {
     logo.style.opacity = this;
   }
 };
-//using the bind method to pass the handleHover as a function the event listener znav.addEventListener('mouseover', handleHover.bind(0.5));
+//using the bind method to pass the handleHover as a function the event listener
+nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
