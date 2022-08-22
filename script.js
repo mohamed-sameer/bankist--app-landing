@@ -31,24 +31,24 @@ document.addEventListener('keydown', function (e) {
 });
 
 const header = document.querySelector('.header');
-const message = document.createElement('div');
-message.classList.add('c-message');
-// message.textContent = 'we use cookies to improve functionality and analytics';
-message.innerHTML =
-  'we use cookies to improve functionality and analytics <button class="btn btn--close-cookie">Got It!</button>';
+// const message = document.createElement('div');
+// message.classList.add('c-message');
+// // message.textContent = 'we use cookies to improve functionality and analytics';
+// message.innerHTML =
+//   'we use cookies to improve functionality and analytics <button class="btn btn--close-cookie">Got It!</button>';
 
-// header.prepend(message);
-// header.before(message);
-header.append(message);
-// header.append(message.cloneNode(true));
-document
-  .querySelector('.btn--close-cookie')
-  .addEventListener('click', function () {
-    message.remove();
-  });
+// // header.prepend(message);
+// // header.before(message);
+// header.append(message);
+// // header.append(message.cloneNode(true));
+// document
+//   .querySelector('.btn--close-cookie')
+//   .addEventListener('click', function () {
+//     message.remove();
+//   });
 
-message.style.height =
-  Number.parseInt(getComputedStyle(message).height, 10) + 40 + 'px';
+// message.style.height =
+//   Number.parseInt(getComputedStyle(message).height, 10) + 40 + 'px';
 
 // smooth scrolling
 const btnScrollTo = document.querySelector('.btn--scroll-to');
@@ -128,3 +128,103 @@ const handleHover = function (e) {
 //using the bind method to pass the handleHover as a function the event listener
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
+
+// // sticky navigation using scroll event
+// // this method is bad for performance
+// const initialCoords = section1.getBoundingClientRect();
+// window.addEventListener('scroll', function () {
+//   if (window.scrollY > initialCoords.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
+const navHeight = nav.getBoundingClientRect().height;
+const stickyNav = function (entires) {
+  const [entry] = entires;
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+headerObserver.observe(header);
+
+// reveal sections
+const allSections = document.querySelectorAll('.section');
+const revealSection = function (entires, observer) {
+  const [entry] = entires;
+  // console.log(entry);
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  // stop observing (we don't want the function to keep running)
+  observer.unobserve(entry.target); // this will stop the observer function from running again and again
+};
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.2,
+});
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
+
+// lazy loading images
+const imgTargets = document.querySelectorAll('img[data-src]');
+const loadImg = function (entires, observer) {
+  const [entry] = entires;
+  if (!entry.isIntersecting) return;
+  //replace src attr with data-src
+  entry.target.src = entry.target.dataset.src;
+  //remove the blur filter using event listener
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+  //stop observing
+  observer.unobserve(entry.target);
+};
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0.2,
+  rootMargin: '200px', // load image before it intersect with viewport
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
+
+// slider
+const slides = document.querySelectorAll('.slide');
+const sliderBtnLeft = document.querySelector('.slider__btn--left');
+const sliderBtnRight = document.querySelector('.slider__btn--right');
+const slideLength = slides.length;
+let currentSlide = 0;
+
+slides.forEach((slide, i) => {
+  slide.style.transform = `translateX(${i * 100}%)`;
+});
+
+const gotoSlide = function (currSlide) {
+  slides.forEach((slide, i) => {
+    slide.style.transform = `translateX(${100 * (i - currSlide)}%)`;
+  });
+};
+// reset the slide
+gotoSlide(0);
+
+const nextSlide = function () {
+  if (currentSlide === slideLength - 1) {
+    currentSlide = 0;
+  } else {
+    currentSlide++;
+  }
+  gotoSlide(currentSlide);
+};
+
+const prevSlide = function () {
+  if (currentSlide === 0) {
+    currentSlide = slideLength - 1;
+  } else {
+    currentSlide--;
+  }
+  gotoSlide(currentSlide);
+};
+sliderBtnRight.addEventListener('click', nextSlide);
+sliderBtnLeft.addEventListener('click', prevSlide);
