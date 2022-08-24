@@ -1,12 +1,19 @@
 'use strict';
-
-///////////////////////////////////////
 // Modal window
-
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const header = document.querySelector('.header');
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+const imgTargets = document.querySelectorAll('img[data-src]');
+const tabs = document.querySelectorAll('.operations__tab');
+const tabContainer = document.querySelector('.operations__tab-container');
+const tabContent = document.querySelectorAll('.operations__content');
+const nav = document.querySelector('.nav');
+const allSections = document.querySelectorAll('.section');
+const navHeight = nav.getBoundingClientRect().height;
 
 const openModal = function (e) {
   e.preventDefault();
@@ -20,17 +27,14 @@ const closeModal = function () {
 };
 
 btnsOpenModal.forEach(modal => modal.addEventListener('click', openModal));
-
 btnCloseModal.addEventListener('click', closeModal);
 overlay.addEventListener('click', closeModal);
-
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
     closeModal();
   }
 });
 
-const header = document.querySelector('.header');
 // const message = document.createElement('div');
 // message.classList.add('c-message');
 // // message.textContent = 'we use cookies to improve functionality and analytics';
@@ -51,9 +55,6 @@ const header = document.querySelector('.header');
 //   Number.parseInt(getComputedStyle(message).height, 10) + 40 + 'px';
 
 // smooth scrolling
-const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
-
 btnScrollTo.addEventListener('click', function (e) {
   const sec1Coords = section1.getBoundingClientRect();
   // window.scrollTo({
@@ -87,22 +88,16 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 });
 
 // tabbed component
-const tabs = document.querySelectorAll('.operations__tab');
-const tabContainer = document.querySelector('.operations__tab-container');
-const tabContent = document.querySelectorAll('.operations__content');
-
 tabContainer.addEventListener('click', function (e) {
   e.preventDefault();
   // closest could return the same element we picked
   const clicked = e.target.closest('.operations__tab');
   if (!clicked) return;
-
   // remove active classes
   tabs.forEach(tab => tab.classList.remove('operations__tab--active'));
   tabContent.forEach(content =>
     content.classList.remove('operations__content--active')
   );
-
   // activate the tab
   clicked.classList.add('operations__tab--active');
   document
@@ -111,7 +106,6 @@ tabContainer.addEventListener('click', function (e) {
 });
 
 // fade the nonelected item in nav
-const nav = document.querySelector('.nav');
 const handleHover = function (e) {
   // matching strategy
   // we didn't use closest() because there are not children we can click by default
@@ -136,7 +130,6 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 //   if (window.scrollY > initialCoords.top) nav.classList.add('sticky');
 //   else nav.classList.remove('sticky');
 // });
-const navHeight = nav.getBoundingClientRect().height;
 const stickyNav = function (entires) {
   const [entry] = entires;
   if (!entry.isIntersecting) nav.classList.add('sticky');
@@ -150,7 +143,6 @@ const headerObserver = new IntersectionObserver(stickyNav, {
 headerObserver.observe(header);
 
 // reveal sections
-const allSections = document.querySelectorAll('.section');
 const revealSection = function (entires, observer) {
   const [entry] = entires;
   // console.log(entry);
@@ -169,7 +161,7 @@ allSections.forEach(function (section) {
 });
 
 // lazy loading images
-const imgTargets = document.querySelectorAll('img[data-src]');
+
 const loadImg = function (entires, observer) {
   const [entry] = entires;
   if (!entry.isIntersecting) return;
